@@ -9,16 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.4",
     "axios": "^1.9.0",
     "expo": "~53.0.9",
     "expo-device": "~7.1.4",
     "expo-location": "~18.1.5",
     "expo-network": "~7.1.5",
     "expo-status-bar": "~2.2.3",
+    "miapp": "file:",
     "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-base64": "^0.2.1",
-    "react-native-ble-plx": "^3.5.0"
+    "react-native-ble-plx": "^3.5.0",
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
