@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import useBLE from "./useBLE";
 import DeviceModal from "./DeviceModal";
-import { enviarLog } from "./service"; 
 
 const App = () => {
   const {

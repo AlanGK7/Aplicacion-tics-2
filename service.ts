@@ -22,7 +22,7 @@ export const obtenerHoraActual = () => {
 };
 
 
-//antes de enviar log, verificar si hay coneccion a internet, si no hay, guardar en localStorage y enviar cuando haya conección
+//antes de enviar log, verificar si hay coneccion a internet, si no hay, guardar en localStorage y enviar cuando haya conexión
 const verificarConexion = async () => {
   const conectado = await hayConexionInternet();
   return conectado;
@@ -35,7 +35,7 @@ export async function enviarLog(mac: string, mensaje: string) {
     const ubicacion = await obtenerUbicacion(); // Obtener ubicación
 
     if (!conectado) {
-      // Guardar el log en la lista de pendientes
+      // Guardar el log en la lista de pendientes, NO GUARDA DE FORMA PERMANENTE, solo en memoria
       listaPendientes.push({ mac, mensaje, hora, ubicacion });
       console.log("Log guardado en pendientes:", { mac, mensaje, hora, ubicacion });
       return { success: false, message: "No hay conexión a internet. Log guardado localmente." };
