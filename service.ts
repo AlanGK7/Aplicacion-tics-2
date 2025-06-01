@@ -46,7 +46,8 @@ export async function enviarLog(mac: string, mensaje: string) {
       const pendiente = listaPendientes.shift(); // Elimina el primer elemento
       if (pendiente) {
         const { mac, mensaje, hora, ubicacion } = pendiente;
-        const urlPendiente = `${API_BASE_URL}/${encodeURIComponent(mac)}/${encodeURIComponent(mensaje)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
+        const urlPendiente = `${API_BASE_URL}/${encodeURIComponent(mensaje)}/${encodeURIComponent(mac)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
+        //puede ser que uncodeURIComponent falle, por el formato => borrar dicho encodeURIComponent y dejar la variable
         await axios.get(urlPendiente);
         await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
       }
