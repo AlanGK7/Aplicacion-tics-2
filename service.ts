@@ -36,8 +36,8 @@ export async function enviarLog(mac: string, mensaje: string) {
 
     if (!conectado) {
       // Guardar el log en la lista de pendientes, NO GUARDA DE FORMA PERMANENTE, solo en memoria
-      listaPendientes.push({ mac, mensaje, hora, ubicacion });
-      console.log("Log guardado en pendientes:", { mac, mensaje, hora, ubicacion });
+      listaPendientes.push({ mensaje, mac, hora, ubicacion });
+      console.log("Log guardado en pendientes:", { mensaje, mac, hora, ubicacion });
       return { success: false, message: "No hay conexión a internet. Log guardado localmente." };
     }
 
@@ -46,15 +46,15 @@ export async function enviarLog(mac: string, mensaje: string) {
       const pendiente = listaPendientes.shift(); // Elimina el primer elemento
       if (pendiente) {
         const { mac, mensaje, hora, ubicacion } = pendiente;
-        const urlPendiente = `${API_BASE_URL}/${encodeURIComponent(mensaje)}/${encodeURIComponent(mac)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
+        const url = `${API_BASE_URL}/${encodeURIComponent(mensaje)}/${encodeURIComponent(mac)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
         //puede ser que uncodeURIComponent falle, por el formato => borrar dicho encodeURIComponent y dejar la variable
-        await axios.get(urlPendiente);
+        await axios.get(url);
         await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
       }
     }
 
     // Enviar log actual
-    const url = `${API_BASE_URL}/${encodeURIComponent(mac)}/${encodeURIComponent(mensaje)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
+    const url = `${API_BASE_URL}/${encodeURIComponent(mensaje)}/${encodeURIComponent(mac)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
     const response = await axios.get(url);
     return response.data;
 
