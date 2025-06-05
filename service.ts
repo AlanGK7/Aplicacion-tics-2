@@ -3,9 +3,8 @@ import axios from "axios";
 const API_BASE_URL = "https://tics-web.vercel.app/api/logs";
 import { obtenerUbicacion } from "./location";
 import { hayConexionInternet } from "./internetConection"; // Asegúrate de tener esta función para verificar la conexión a internet
-
+// const asyncStorage = require("@react-native-async-storage/async-storage"); // agregando para manejar el almacenamiento local en React Native
 const listaPendientes: { mac: string; mensaje: string; hora: string; ubicacion: string }[] = [];
-
 
 export const obtenerHoraActual = () => {
   const ahora = new Date();
@@ -17,8 +16,8 @@ export const obtenerHoraActual = () => {
   const hora = String(ahora.getHours()).padStart(2, "0");
   const minutos = String(ahora.getMinutes()).padStart(2, "0");
   const segundos = String(ahora.getSeconds()).padStart(2, "0");
-
-  return `${año}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
+  const region = Intl.DateTimeFormat().resolvedOptions().timeZone; // Obtener la zona horaria
+  return `${region}-${año}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
 };
 
 
