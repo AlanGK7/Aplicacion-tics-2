@@ -3,8 +3,10 @@ import axios from "axios";
 const API_BASE_URL = "https://tics-web.vercel.app/api/logs";
 import { obtenerUbicacion } from "./location";
 import { hayConexionInternet } from "./internetConection"; // Asegúrate de tener esta función para verificar la conexión a internet
-// const asyncStorage = require("@react-native-async-storage/async-storage"); // agregando para manejar el almacenamiento local en React Native
-const listaPendientes: { mac: string; mensaje: string; hora: string; ubicacion: string }[] = [];
+import AsyncStorage from "@react-native-async-storage/async-storage"; // agregando para manejar el almacenamiento local en React Native
+
+const STORAGE_KEY = "logs_pendientes";
+
 
 export const obtenerHoraActual = () => {
   const ahora = new Date();
@@ -20,46 +22,52 @@ export const obtenerHoraActual = () => {
   return `${region}-${año}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
 };
 
+const cargarLogsPendientes = async (): Promise<any[]> => {
+  const data = await AsyncStorage.getItem(STORAGE_KEY);
+  return data ? JSON.parse(data) : [];
+};
+const guardarLogsPendientes = async (logs: any[]) => {
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+};
+
 
 //antes de enviar log, verificar si hay coneccion a internet, si no hay, guardar en localStorage y enviar cuando haya conexión
 const verificarConexion = async () => {
   const conectado = await hayConexionInternet();
   return conectado;
 };
+
 export async function enviarLog(mac: string, mensaje: string) {
   try {
-    const conectado = await verificarConexion();
+    const conectado = await hayConexionInternet();
+    const hora = obtenerHoraActual();
+    const ubicacion = await obtenerUbicacion();
 
-    const hora = obtenerHoraActual(); // Obtener la hora actual
-    const ubicacion = await obtenerUbicacion(); // Obtener ubicación
+    const nuevoLog = { mac, mensaje, hora, ubicacion };
 
     if (!conectado) {
-      // Guardar el log en la lista de pendientes, NO GUARDA DE FORMA PERMANENTE, solo en memoria
-      listaPendientes.push({ mac, mensaje, hora, ubicacion });
-      console.log("Log guardado en pendientes:", { mensaje, mac, hora, ubicacion });
-      return { success: false, message: "No hay conexión a internet. Log guardado localmente." };
+      const logsPendientes = await cargarLogsPendientes();
+      logsPendientes.push(nuevoLog);
+      await guardarLogsPendientes(logsPendientes);
+      console.log("Log guardado localmente:", nuevoLog);
+      return;
     }
 
     // Enviar logs pendientes primero
-    while (listaPendientes.length > 0) {
-      const pendiente = listaPendientes.shift(); // Elimina el primer elemento
-      if (pendiente) {
-        const { mac, mensaje, hora, ubicacion } = pendiente;
-        const url = `${API_BASE_URL}/${encodeURIComponent(mac)}/${encodeURIComponent(mensaje)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
-        //puede ser que uncodeURIComponent falle, por el formato => borrar dicho encodeURIComponent y dejar la variable
-        await axios.get(url);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
-      }
+    const logsPendientes = await cargarLogsPendientes();
+    for (const log of logsPendientes) {
+      const url = `${API_BASE_URL}/${encodeURIComponent(log.mac)}/${encodeURIComponent(log.mensaje)}/${encodeURIComponent(log.hora)}/${encodeURIComponent(log.ubicacion)}`;
+      await axios.get(url);
+      // await new Promise(resolve => setTimeout(resolve, 1000)); // estudiar la posibilidad de enviar directamente o hacer espera entre envío
     }
+    await AsyncStorage.removeItem(STORAGE_KEY); // Borrar si ya se enviaron todos
 
-    // Enviar log actual
+    // Enviar el log actual
     const url = `${API_BASE_URL}/${encodeURIComponent(mac)}/${encodeURIComponent(mensaje)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
-    const response = await axios.get(url);
-    return response.data;
-
+    await axios.get(url);
+    console.log("Log enviado:", nuevoLog);
   } catch (error) {
     console.error("Error al enviar log:", error);
-    throw error;
   }
 }
 
