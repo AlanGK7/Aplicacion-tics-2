@@ -24,6 +24,7 @@
 ---
 
 ## 📁 Estructura del Proyecto
+
 MiApp/
 ├── android/ # Archivos específicos para Android
 ├── assets/ # Recursos estáticos (imágenes, iconos)
@@ -83,6 +84,6 @@ const connectToDevice = async (device: Device) => {
     console.log("Connection failed:", error);
   }
 };
-
+```
 
 
