@@ -150,9 +150,17 @@ export const hayConexionInternet = async (): Promise<boolean> => {
 ```bash
 git clone https://github.com/AlanGK7/Aplicacion-tics-2.git
 cd Aplicacion-tics-2
+```
 
+### 2. Actualizar repositorio
+
+```bash
 npm install
+```
+### 3. Iniciar aplicación
 
+```bash
 npm run android
+```
 
 
