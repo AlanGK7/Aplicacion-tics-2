@@ -25,23 +25,24 @@
 
 ## 📁 Estructura del Proyecto
 
+```plaintext
 MiApp/
-├── android/ # Archivos específicos para Android
-├── assets/ # Recursos estáticos (imágenes, iconos)
-│ ├── icon.png
-│ ├── splash-icon.png
-│ ├── adaptive-icon.png
-│ └── favicon.png
-├── App.tsx # Componente principal de la aplicación
-├── service.ts # Manejo de envío y almacenamiento local de logs
-├── useBLE.ts # Hook personalizado para la gestión BLE
-├── location.ts # Función para obtener ubicación GPS
-├── internetConection.ts # Función para verificar conexión a Internet
-├── package.json # Información y dependencias del proyecto
-├── app.json # Configuración de Expo (nombre, permisos, etc.)
-├── tsconfig.json # Configuración de TypeScript
-└── README.md # Documentación del proyecto
-
+├── android/                    # Archivos específicos para Android
+├── assets/                     # Recursos estáticos (imágenes, iconos)
+│   ├── icon.png
+│   ├── splash-icon.png
+│   ├── adaptive-icon.png
+│   └── favicon.png
+├── App.tsx                     # Componente principal de la aplicación
+├── service.ts                  # Manejo de envío y almacenamiento local de logs
+├── useBLE.ts                   # Hook personalizado para la gestión BLE
+├── location.ts                 # Función para obtener ubicación GPS
+├── internetConection.ts        # Función para verificar conexión a Internet
+├── package.json                # Información y dependencias del proyecto
+├── app.json                    # Configuración de Expo (nombre, permisos, etc.)
+├── tsconfig.json               # Configuración de TypeScript
+└── README.md                   # Documentación del proyecto
+```
 
 ---
 
