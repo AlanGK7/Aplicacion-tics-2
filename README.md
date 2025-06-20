@@ -85,5 +85,73 @@ const connectToDevice = async (device: Device) => {
   }
 };
 ```
+### 2. Manejo de Logs (service.ts)
+
+- Guarda localmente los logs si no hay conexión.
+- Envía logs pendientes y actuales al servidor cuando hay conexión.
+- Obtiene la ubicación y hora actual para cada log.
+
+```ts
+export async function enviarLog(mac: string, mensaje: string) {
+  const conectado = await hayConexionInternet();
+  const hora = obtenerHoraActual();
+  const ubicacion = await obtenerUbicacion();
+
+  if (!conectado) {
+    const logsPendientes = await cargarLogsPendientes();
+    logsPendientes.push({ mac, mensaje, hora, ubicacion });
+    await guardarLogsPendientes(logsPendientes);
+    return;
+  }
+
+  // Enviar logs pendientes y actual
+  // ...
+}
+```
+
+### 3. Obtención de Ubicación (location.ts)
+
+- Solicita permiso para ubicación.
+- Retorna la latitud y longitud separadas por punto y coma.
+
+```ts
+export const obtenerUbicacion = async (): Promise<string> => {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") throw new Error("Permiso de ubicación denegado");
+  const ubicacion = await Location.getCurrentPositionAsync({});
+  return `${ubicacion.coords.latitude};${ubicacion.coords.longitude}`;
+};
+```
+
+### 4. Verificación de Conexión a Internet (internetConection.ts)
+
+- Verifica el estado de conexión de red para saber si se puede enviar información.
+
+```ts
+export const hayConexionInternet = async (): Promise<boolean> => {
+  const estado = await Network.getNetworkStateAsync();
+  return (estado.isConnected ?? false) && (estado.isInternetReachable !== false);
+};
+```
+
+## 📦 Scripts Disponibles (`package.json`)
+
+| Script   | Descripción                                                |
+|----------|------------------------------------------------------------|
+| `start`  | Inicia el servidor de desarrollo Expo (`expo start`)       |
+| `android`| Construye y ejecuta la app en Android (`expo run:android`) |
+
+
+## 🧪 Instalación y Ejecución
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/AlanGK7/Aplicacion-tics-2.git
+cd Aplicacion-tics-2
+
+npm install
+
+npm run android
 
 
