@@ -55,13 +55,21 @@ export async function enviarLog(mac: string, mensaje: string) {
 
     // Enviar logs pendientes primero
    const logsPendientes = await cargarLogsPendientes();
-    for (const log of logsPendientes) {
+      for (const log of logsPendientes) {
+      const url = `${API_BASE_URL}/${encodeURIComponent(log.mac)}/${encodeURIComponent(log.mensaje)}/${encodeURIComponent(log.hora)}/${encodeURIComponent(log.ubicacion)}`;
+      await axios.get(url);
+      // await new Promise(resolve => setTimeout(resolve, 1000)); // estudiar la posibilidad de enviar directamente o hacer espera entre envío
       await axios.post(API_BASE_URL, log);
     }
     await AsyncStorage.removeItem(STORAGE_KEY); // Borrar si ya se enviaron todos
 
+
+
+    
+
     // Enviar el log actual
-    await axios.post(API_BASE_URL, nuevoLog);
+    const url = `${API_BASE_URL}/${encodeURIComponent(mac)}/${encodeURIComponent(mensaje)}/${encodeURIComponent(hora)}/${encodeURIComponent(ubicacion)}`;
+    await axios.get(url);
     console.log("Log enviado:", nuevoLog);
 
   } catch (error) {
